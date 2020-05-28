@@ -1,0 +1,10 @@
+version: "2"
+services:
+  web:
+    labels:
+      io.rancher.container.pull_image: always
+    tty: true
+    image: nginx
+  test:
+    image: $DOCKER_REGISTRY/$DOCKER_USERNAME/$DOCKER_IMAGE:$GITHUB_SHA
+stdin_open: true

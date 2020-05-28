@@ -1,0 +1,17 @@
+name: 'Rancher Deploy'
+description: 'Deploy to Rancher 1.6'
+inputs:
+  who-to-greet:  # id of input
+    description: 'Who to greet'
+    required: true
+    default: 'World'
+  image:
+    description: 'MooPoo'
+outputs:
+  time: # id of output
+    description: 'The time we greeted you'
+runs:
+  using: 'docker'
+  image: 'Dockerfile'
+  args:
+    - ${{ inputs.who-to-greet }}
