@@ -1,17 +1,31 @@
 name: 'Rancher Deploy'
 description: 'Deploy to Rancher 1.6'
 inputs:
-  who-to-greet:  # id of input
-    description: 'Who to greet'
+  url:
+    description: 'Rancher URL'
     required: true
-    default: 'World'
-  image:
-    description: 'MooPoo'
+  access_key:
+    description: 'Rancher Access Key'
+    required: true
+  secret_key:
+    description: 'Rancher Secret Key'
+    required: true
+  stack:
+    description: 'Rancher Stack'
+    required: true
+  compose_file:
+    description: 'Docker Compose File'
+    required: false
+    default: 'docker-compose.yml'
 outputs:
   time: # id of output
     description: 'The time we greeted you'
 runs:
   using: 'docker'
   image: 'Dockerfile'
-  args:
-    - ${{ inputs.who-to-greet }}
+  env:
+    RANCHER_URL: ${{ inputs.url }}
+    RANCHER_ACCESS_KEY: ${{ inputs.access_key }}
+    RANCHER_SECRET_KEY: ${{ inputs.secret_key }}
+    RANCHER_STACK: ${{ inputs.stack }}
+    COMPOSE_FILE: ${{ inputs.compose_file }}
