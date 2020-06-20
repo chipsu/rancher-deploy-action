@@ -20,27 +20,28 @@ check_file_var() {
 
 cd "$GITHUB_WORKSPACE" || exit 1
 
-if [[ "$GITHUB_BRANCH" = "" ]]; then
-    GITHUB_BRANCH=${GITHUB_REF#refs/*/}
-fi
-
 if [[ "$COMPOSE_FILE" = "" ]]; then
     COMPOSE_FILE=docker-compose.yml
+
+    if [[ "$GITHUB_BRANCH" = "" ]]; then
+        GITHUB_BRANCH=${GITHUB_REF#refs/*/}
+    fi
+
+    check_var "GITHUB_BRANCH"
 
     if [[ -f "docker-compose-${GITHUB_BRANCH}.yml" ]]; then
         COMPOSE_FILE="docker-compose-${GITHUB_BRANCH}.yml"
     fi
 
     if [[ "$RANCHER_STACK" = "" ]]; then
+        check_var "GITHUB_REPOSITORY"
         RANCHER_STACK=$COMPOSE_FILE
         RANCHER_STACK=${RANCHER_STACK/docker-compose/$GITHUB_REPOSITORY}
         RANCHER_STACK=${RANCHER_STACK/.yml/}
+        #RANCHER_STACK=${RANCHER_STACK/\/-/}
     fi
 fi
 
-check_var "GITHUB_SHA"
-check_var "GITHUB_REPOSITORY"
-check_var "GITHUB_BRANCH"
 check_var "RANCHER_URL"
 check_var "RANCHER_ACCESS_KEY"
 check_var "RANCHER_SECRET_KEY"
@@ -55,7 +56,6 @@ if [[ $failed -gt 0 ]]; then
 fi
 
 echo Deploying to Rancher...
-echo GITHUB_SHA=$GITHUB_SHA
 echo COMPOSE_FILE=$COMPOSE_FILE
 echo RANCHER_STACK=$RANCHER_STACK
 
