@@ -55,8 +55,18 @@ if [[ $failed -gt 0 ]]; then
     exit 1
 fi
 
-# Validate compose file
-docker-compose -f "$COMPOSE_FILE" config || exit 1
+if [[ "$VALIDATE_COMPOSE_FILE" == "true" ]]; then
+    docker-compose -f "$COMPOSE_FILE" config > /dev/null || exit 1
+fi
+
+if [[ "$USE_ENVSUBST" == "true" ]]; then
+    ORIG_COMPOSE_FILE=$COMPOSE_FILE
+    COMPOSE_FILE=$(mktemp)
+    cat "$ORIG_COMPOSE_FILE" | envsubst > "$COMPOSE_FILE"
+fi
+
+echo Config:
+cat "$COMPOSE_FILE"
 
 echo Deploying to Rancher...
 echo COMPOSE_FILE=$COMPOSE_FILE

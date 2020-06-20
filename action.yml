@@ -17,6 +17,14 @@ inputs:
     description: 'Docker Compose File'
     required: false
     default: 'docker-compose.yml'
+  validate_compose_file:
+    description: 'Validate Compose File'
+    required: false
+    default: "true"
+  use_envsubst:
+    description: 'Use envsubst for variable substitution'
+    required: false
+    default: "true"
 runs:
   using: 'docker'
   image: 'Dockerfile'
@@ -26,3 +34,5 @@ runs:
     RANCHER_SECRET_KEY: ${{ inputs.secret_key }}
     RANCHER_STACK: ${{ inputs.stack }}
     COMPOSE_FILE: ${{ inputs.compose_file }}
+    VALIDATE_COMPOSE_FILE: ${{ inputs.validate_compose_file }}
+    USE_ENVSUBST: ${{ inputs.use_envsubst }}
