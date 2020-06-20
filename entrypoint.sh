@@ -38,7 +38,7 @@ if [[ "$COMPOSE_FILE" = "" ]]; then
         RANCHER_STACK=$COMPOSE_FILE
         RANCHER_STACK=${RANCHER_STACK/docker-compose/$GITHUB_REPOSITORY}
         RANCHER_STACK=${RANCHER_STACK/.yml/}
-        #RANCHER_STACK=${RANCHER_STACK/\/-/}
+        RANCHER_STACK=${RANCHER_STACK/\/-/}
     fi
 fi
 
@@ -54,6 +54,9 @@ if [[ $failed -gt 0 ]]; then
     ls -lha
     exit 1
 fi
+
+# Validate compose file
+docker-compose -f "$COMPOSE_FILE" config || exit 1
 
 echo Deploying to Rancher...
 echo COMPOSE_FILE=$COMPOSE_FILE
