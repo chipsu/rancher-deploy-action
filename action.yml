@@ -25,6 +25,10 @@ inputs:
     description: 'Use envsubst for variable substitution'
     required: false
     default: "true"
+  action:
+    description: 'Actions to perform (deploy|confirm|rollback)'
+    required: false
+    default: "deploy,confirm"
 runs:
   using: 'docker'
   image: 'Dockerfile'
@@ -33,6 +37,7 @@ runs:
     RANCHER_ACCESS_KEY: ${{ inputs.access_key }}
     RANCHER_SECRET_KEY: ${{ inputs.secret_key }}
     RANCHER_STACK: ${{ inputs.stack }}
+    RANCHER_ACTION: ${{ inputs.action }}
     COMPOSE_FILE: ${{ inputs.compose_file }}
     VALIDATE_COMPOSE_FILE: ${{ inputs.validate_compose_file }}
     USE_ENVSUBST: ${{ inputs.use_envsubst }}

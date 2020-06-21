@@ -46,6 +46,7 @@ check_var "RANCHER_URL"
 check_var "RANCHER_ACCESS_KEY"
 check_var "RANCHER_SECRET_KEY"
 check_var "RANCHER_STACK"
+check_var "RANCHER_ACTION"
 check_var "COMPOSE_FILE"
 check_file_var "COMPOSE_FILE"
 
@@ -67,13 +68,21 @@ fi
 
 echo Config:
 cat "$COMPOSE_FILE"
+echo
 
 echo Deploying to Rancher...
 echo COMPOSE_FILE=$COMPOSE_FILE
 echo RANCHER_STACK=$RANCHER_STACK
+echo RANCHER_ACTION=$RANCHER_ACTION
 
-rancher up -s $RANCHER_STACK -f $COMPOSE_FILE --pull --upgrade --prune -d || exit 1
-rancher up -s $RANCHER_STACK -f $COMPOSE_FILE --confirm-upgrade -d || exit 1
+if echo "$RANCHER_ACTION" | grep -q "deploy"; then
+    rancher up -s "$RANCHER_STACK" -f "$COMPOSE_FILE" --pull --upgrade --prune -d || exit 1
+fi
 
-#echo todo lb?
-#echo todo healthcheck and rollback?
+if echo "$RANCHER_ACTION" | grep -q "confirm"; then
+    rancher up -s "$RANCHER_STACK" -f "$COMPOSE_FILE" --confirm-upgrade -d || exit 1
+fi
+
+if echo  "$RANCHER_ACTION" | grep -q "rollback"; then
+    rancher up -s "$RANCHER_STACK" -f "$COMPOSE_FILE" --rollback -d || exit 1
+fi
